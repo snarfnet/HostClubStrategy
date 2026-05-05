@@ -17,46 +17,53 @@ struct HomeView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     // Header
-                    VStack(spacing: 8) {
+                    VStack(spacing: 6) {
                         Text("ホストクラブ攻略アプリ")
-                            .font(.system(size: 22, weight: .black))
+                            .font(.system(size: 28, weight: .black))
                             .foregroundStyle(
-                                LinearGradient(colors: [AppTheme.pinkLight, AppTheme.pink, AppTheme.purple],
+                                LinearGradient(colors: [AppTheme.gold, AppTheme.pinkLight, AppTheme.pink],
                                                startPoint: .leading, endPoint: .trailing)
                             )
-                            .shadow(color: AppTheme.pink.opacity(0.6), radius: 8)
+                            .shadow(color: AppTheme.pink.opacity(0.6), radius: 10)
 
                         Text("～No.1ホストはあなたの彼氏～")
-                            .font(.system(size: 13, weight: .medium))
+                            .font(.system(size: 14, weight: .medium))
                             .foregroundColor(AppTheme.textPink)
 
                         Text("Host Club Strategy")
-                            .font(.system(size: 11))
+                            .font(.system(size: 12))
                             .foregroundColor(AppTheme.textSecondary)
                     }
-                    .padding(.top, 48)
-                    .padding(.bottom, 32)
+                    .padding(.top, 52)
+                    .padding(.bottom, 24)
 
                     // Tagline
-                    Text("あの星みたいなトップホストを、\nわたしのものに。")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(AppTheme.textPrimary)
-                        .multilineTextAlignment(.center)
-                        .lineSpacing(6)
-                        .padding(.horizontal, 32)
-                        .padding(.bottom, 36)
+                    VStack(spacing: 4) {
+                        ForEach(["あの星みたいな", "トップホストを、", "わたしのものに。"], id: \.self) { line in
+                            Text(line)
+                                .font(.system(size: 32, weight: .black))
+                                .foregroundStyle(
+                                    LinearGradient(colors: [AppTheme.textPrimary, AppTheme.pinkLight],
+                                                   startPoint: .leading, endPoint: .trailing)
+                                )
+                                .shadow(color: AppTheme.pink.opacity(0.3), radius: 6)
+                        }
+                    }
+                    .multilineTextAlignment(.leading)
+                    .padding(.horizontal, 28)
+                    .padding(.bottom, 36)
 
                     // Goal selection
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("目標を選んでください")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundColor(AppTheme.textSecondary)
-                            .padding(.horizontal, 20)
-
-                        Text("What is your goal?")
-                            .font(.system(size: 11))
-                            .foregroundColor(AppTheme.textSecondary.opacity(0.6))
-                            .padding(.horizontal, 20)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("目標を選んでください")
+                                .font(.system(size: 17, weight: .bold))
+                                .foregroundColor(AppTheme.textPrimary)
+                            Text("What is your goal?")
+                                .font(.system(size: 12))
+                                .foregroundColor(AppTheme.textSecondary)
+                        }
+                        .padding(.horizontal, 20)
 
                         ForEach(Goal.allCases) { goal in
                             GoalCard(goal: goal, isSelected: selectedGoal == goal) {
@@ -73,16 +80,23 @@ struct HomeView: View {
 
                     // Quick tips
                     VStack(spacing: 16) {
-                        Divider().background(AppTheme.cardBorder)
-
-                        Text("攻略の基本")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundColor(AppTheme.textSecondary)
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("攻略の基本")
+                                    .font(.system(size: 17, weight: .bold))
+                                    .foregroundColor(AppTheme.textPrimary)
+                                Text("Basic Strategy")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(AppTheme.textSecondary)
+                            }
+                            Spacer()
+                        }
+                        .padding(.horizontal, 20)
 
                         HStack(spacing: 12) {
-                            QuickTipItem(icon: "brain.head.profile", text: "心理学で\n読む", color: AppTheme.purple)
-                            QuickTipItem(icon: "timer", text: "タイミング\nを計る", color: AppTheme.pink)
-                            QuickTipItem(icon: "exclamationmark.triangle.fill", text: "痛客を\n避ける", color: AppTheme.gold)
+                            QuickTipItem(icon: "brain.head.profile", text: "心理学で\n読む", color: AppTheme.purple, subLabel: "Psychology")
+                            QuickTipItem(icon: "timer", text: "タイミング\nを計る", color: AppTheme.pink, subLabel: "Timing")
+                            QuickTipItem(icon: "exclamationmark.triangle.fill", text: "痛客を\n避ける", color: AppTheme.gold, subLabel: "Avoid")
                         }
                         .padding(.horizontal, 20)
                     }
@@ -102,36 +116,39 @@ struct GoalCard: View {
         Button(action: onTap) {
             HStack(spacing: 16) {
                 Image(systemName: goal.icon)
-                    .font(.system(size: 22))
-                    .foregroundColor(isSelected ? AppTheme.bg : AppTheme.pink)
-                    .frame(width: 48, height: 48)
-                    .background(isSelected ? AppTheme.pink : AppTheme.card)
-                    .clipShape(Circle())
-                    .shadow(color: isSelected ? AppTheme.pinkGlow : .clear, radius: 8)
+                    .font(.system(size: 24))
+                    .foregroundColor(isSelected ? .white : AppTheme.pink)
+                    .frame(width: 52, height: 52)
+                    .background(
+                        Circle()
+                            .fill(isSelected ? AppTheme.pink : AppTheme.card)
+                            .overlay(Circle().stroke(AppTheme.pink.opacity(0.5), lineWidth: 1.5))
+                    )
+                    .shadow(color: isSelected ? AppTheme.pinkGlow : .clear, radius: 10)
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 5) {
                     Text(goal.title)
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.system(size: 17, weight: .bold))
                         .foregroundColor(isSelected ? AppTheme.pink : AppTheme.textPrimary)
                     Text(goal.titleEN)
-                        .font(.system(size: 11))
+                        .font(.system(size: 12))
                         .foregroundColor(AppTheme.textSecondary)
                 }
 
                 Spacer()
 
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "chevron.right")
-                    .foregroundColor(isSelected ? AppTheme.pink : AppTheme.textSecondary)
-                    .font(.system(size: 16))
+                Image(systemName: isSelected ? "checkmark" : "chevron.right")
+                    .foregroundColor(isSelected ? AppTheme.pink : AppTheme.textSecondary.opacity(0.6))
+                    .font(.system(size: isSelected ? 16 : 14, weight: isSelected ? .bold : .regular))
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
+            .padding(.horizontal, 18)
+            .padding(.vertical, 16)
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(isSelected ? AppTheme.pink.opacity(0.12) : AppTheme.card)
+                    .fill(isSelected ? AppTheme.pink.opacity(0.10) : AppTheme.card)
                     .overlay(
                         RoundedRectangle(cornerRadius: 16)
-                            .stroke(isSelected ? AppTheme.pink.opacity(0.6) : AppTheme.cardBorder, lineWidth: 1)
+                            .stroke(isSelected ? AppTheme.pink : AppTheme.cardBorder, lineWidth: isSelected ? 1.5 : 1)
                     )
             )
             .padding(.horizontal, 16)
@@ -144,23 +161,34 @@ struct QuickTipItem: View {
     let icon: String
     let text: String
     let color: Color
+    let subLabel: String
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 10) {
             Image(systemName: icon)
-                .font(.system(size: 22))
+                .font(.system(size: 30))
                 .foregroundColor(color)
+                .frame(width: 56, height: 56)
+                .background(
+                    Circle()
+                        .fill(AppTheme.bg)
+                        .overlay(Circle().stroke(color.opacity(0.5), lineWidth: 1.5))
+                )
+                .shadow(color: color.opacity(0.3), radius: 6)
             Text(text)
-                .font(.system(size: 11, weight: .medium))
-                .foregroundColor(AppTheme.textSecondary)
+                .font(.system(size: 12, weight: .bold))
+                .foregroundColor(AppTheme.textPrimary)
                 .multilineTextAlignment(.center)
+            Text(subLabel)
+                .font(.system(size: 10))
+                .foregroundColor(AppTheme.textSecondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 14)
+        .padding(.vertical, 16)
         .background(
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: 14)
                 .fill(AppTheme.card)
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(color.opacity(0.3), lineWidth: 1))
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(color.opacity(0.4), lineWidth: 1))
         )
     }
 }

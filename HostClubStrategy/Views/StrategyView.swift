@@ -15,15 +15,19 @@ struct StrategyView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     // Header
-                    VStack(spacing: 4) {
+                    VStack(spacing: 6) {
                         Text("状況を入力")
-                            .font(.system(size: 22, weight: .black))
-                            .foregroundColor(AppTheme.textPrimary)
+                            .font(.system(size: 28, weight: .black))
+                            .foregroundStyle(
+                                LinearGradient(colors: [AppTheme.gold, AppTheme.pinkLight],
+                                               startPoint: .leading, endPoint: .trailing)
+                            )
+                            .shadow(color: AppTheme.gold.opacity(0.4), radius: 8)
                         Text("Analyze Your Situation")
-                            .font(.system(size: 12))
+                            .font(.system(size: 13))
                             .foregroundColor(AppTheme.textSecondary)
                     }
-                    .padding(.top, 16)
+                    .padding(.top, 20)
 
                     // Goal display
                     if let goal = input.goal as Goal? {
@@ -149,13 +153,13 @@ struct InputSection<Content: View>: View {
     @ViewBuilder let content: Content
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.system(size: 16, weight: .bold))
                     .foregroundColor(AppTheme.textPrimary)
                 Text(titleEN)
-                    .font(.system(size: 10))
+                    .font(.system(size: 11))
                     .foregroundColor(AppTheme.textSecondary)
             }
             content
@@ -176,32 +180,41 @@ struct AttachmentStyleRow: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 10) {
-                Circle()
-                    .fill(isSelected ? AppTheme.pink : AppTheme.card)
-                    .overlay(Circle().stroke(AppTheme.pink.opacity(0.5), lineWidth: 1))
-                    .frame(width: 20, height: 20)
-                    .overlay(
-                        Image(systemName: "checkmark")
-                            .font(.system(size: 10, weight: .bold))
-                            .foregroundColor(.white)
-                            .opacity(isSelected ? 1 : 0)
+            HStack(spacing: 14) {
+                Image(systemName: isSelected ? "heart.fill" : "diamond")
+                    .font(.system(size: 18))
+                    .foregroundColor(isSelected ? .white : AppTheme.pink)
+                    .frame(width: 44, height: 44)
+                    .background(
+                        Circle()
+                            .fill(isSelected ? AppTheme.pink : AppTheme.card)
+                            .overlay(Circle().stroke(AppTheme.pink.opacity(0.5), lineWidth: 1.5))
                     )
-                VStack(alignment: .leading, spacing: 2) {
+                    .shadow(color: isSelected ? AppTheme.pinkGlow : .clear, radius: 8)
+
+                VStack(alignment: .leading, spacing: 3) {
                     Text(style.label)
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.system(size: 15, weight: .bold))
                         .foregroundColor(isSelected ? AppTheme.pink : AppTheme.textPrimary)
                     Text(style.description)
-                        .font(.system(size: 10))
+                        .font(.system(size: 11))
                         .foregroundColor(AppTheme.textSecondary)
                         .lineLimit(2)
                 }
                 Spacer()
+                Image(systemName: isSelected ? "checkmark" : "chevron.right")
+                    .font(.system(size: isSelected ? 14 : 12, weight: isSelected ? .bold : .regular))
+                    .foregroundColor(isSelected ? AppTheme.pink : AppTheme.textSecondary.opacity(0.5))
             }
-            .padding(10)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
             .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(isSelected ? AppTheme.pink.opacity(0.1) : Color.clear)
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(isSelected ? AppTheme.pink.opacity(0.1) : AppTheme.bgMid)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(isSelected ? AppTheme.pink.opacity(0.5) : Color.clear, lineWidth: 1)
+                    )
             )
         }
         .buttonStyle(.plain)

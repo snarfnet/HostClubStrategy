@@ -11,15 +11,19 @@ struct PsychologyView: View {
 
             ScrollView {
                 VStack(spacing: 20) {
-                    VStack(spacing: 4) {
+                    VStack(spacing: 6) {
                         Text("心理学テクニック")
-                            .font(.system(size: 22, weight: .black))
-                            .foregroundColor(AppTheme.textPrimary)
+                            .font(.system(size: 28, weight: .black))
+                            .foregroundStyle(
+                                LinearGradient(colors: [AppTheme.gold, AppTheme.pinkLight],
+                                               startPoint: .leading, endPoint: .trailing)
+                            )
+                            .shadow(color: AppTheme.gold.opacity(0.4), radius: 8)
                         Text("Psychology Tactics Library")
-                            .font(.system(size: 12))
+                            .font(.system(size: 13))
                             .foregroundColor(AppTheme.textSecondary)
                     }
-                    .padding(.top, 16)
+                    .padding(.top, 20)
 
                     // Intro card
                     VStack(alignment: .leading, spacing: 8) {
@@ -41,10 +45,15 @@ struct PsychologyView: View {
 
                     // Attachment styles section
                     VStack(alignment: .leading, spacing: 12) {
-                        Label("愛着スタイル別 攻略法", systemImage: "brain.head.profile")
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(AppTheme.purple)
-                            .padding(.horizontal, 16)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Label("愛着スタイル別 攻略法", systemImage: "brain.head.profile")
+                                .font(.system(size: 17, weight: .bold))
+                                .foregroundColor(AppTheme.purple)
+                            Text("Attachment Style Strategy")
+                                .font(.system(size: 11))
+                                .foregroundColor(AppTheme.textSecondary)
+                        }
+                        .padding(.horizontal, 16)
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 12) {
@@ -58,10 +67,15 @@ struct PsychologyView: View {
 
                     // All tactics
                     VStack(alignment: .leading, spacing: 12) {
-                        Label("全テクニック一覧", systemImage: "list.star")
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(AppTheme.pink)
-                            .padding(.horizontal, 16)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Label("全テクニック一覧", systemImage: "list.star")
+                                .font(.system(size: 17, weight: .bold))
+                                .foregroundColor(AppTheme.pink)
+                            Text("Tactic Library")
+                                .font(.system(size: 11))
+                                .foregroundColor(AppTheme.textSecondary)
+                        }
+                        .padding(.horizontal, 16)
 
                         ForEach(PsychologyEngine.allTactics) { tactic in
                             TacticCard(tactic: tactic, isExpanded: selectedTactic?.id == tactic.id) {
@@ -175,17 +189,17 @@ struct TacticCard: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 3) {
                         Text(tactic.name)
-                            .font(.system(size: 14, weight: .bold))
+                            .font(.system(size: 16, weight: .bold))
                             .foregroundColor(AppTheme.textPrimary)
                         Text(tactic.nameEN)
-                            .font(.system(size: 10))
+                            .font(.system(size: 11))
                             .foregroundColor(AppTheme.textSecondary)
                     }
                     Spacer()
-                    HStack(spacing: 2) {
+                    HStack(spacing: 3) {
                         ForEach(0..<5, id: \.self) { i in
                             Image(systemName: "star.fill")
-                                .font(.system(size: 8))
+                                .font(.system(size: 10))
                                 .foregroundColor(i < tactic.effectiveness ? AppTheme.gold : AppTheme.textSecondary.opacity(0.3))
                         }
                     }
