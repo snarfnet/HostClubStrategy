@@ -2,15 +2,26 @@ import SwiftUI
 import GoogleMobileAds
 
 struct BannerAdView: UIViewRepresentable {
-    func makeUIView(context: Context) -> BannerView {
-        let banner = BannerView(adSize: AdSizeBanner)
+    func makeUIView(context: Context) -> GADBannerView {
+        let banner = GADBannerView(adSize: GADAdSizeBanner)
         banner.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let root = scene.windows.first?.rootViewController {
-            banner.rootViewController = root
-        }
-        banner.load(Request())
+        banner.delegate = context.coordinator
         return banner
     }
-    func updateUIView(_ uiView: BannerView, context: Context) {}
+
+    func updateUIView(_ uiView: GADBannerView, context: Context) {
+        guard uiView.rootViewController == nil else { return }
+        DispatchQueue.main.async {
+            guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let root = scene.keyWindow?.rootViewController else { return }
+            uiView.rootViewController = root
+            uiView.load(GADRequest())
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    class Coordinator: NSObject, GADBannerViewDelegate {
+        func bannerView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: Error) {}
+    }
 }

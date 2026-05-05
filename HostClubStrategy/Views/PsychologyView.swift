@@ -87,22 +87,22 @@ struct PsychologyView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             BadBoyInsightRow(
                                 title: "自信（Confidence）",
-                                body: "結果を恐れない姿勢。どんな状況でも「断られてもいい」という余裕が、逆に魅力的に映る。ホストが複数の客と接しても揺れないのはこのため。"
+                                content: "結果を恐れない姿勢。どんな状況でも「断られてもいい」という余裕が、逆に魅力的に映る。ホストが複数の客と接しても揺れないのはこのため。"
                             )
                             Divider().background(AppTheme.cardBorder)
                             BadBoyInsightRow(
                                 title: "過度な依存をしない",
-                                body: "相手に必要以上に執着しない人間は希少性が高い。恋愛書籍では一貫して「追いかけすぎる側が不利」と語られる。"
+                                content: "相手に必要以上に執着しない人間は希少性が高い。恋愛書籍では一貫して「追いかけすぎる側が不利」と語られる。"
                             )
                             Divider().background(AppTheme.cardBorder)
                             BadBoyInsightRow(
                                 title: "ミステリアスさ（Not Fully Available）",
-                                body: "すべてをさらけ出さない。「まだ知らない面がある」という感覚が相手を引きつけ続ける。"
+                                content: "すべてをさらけ出さない。「まだ知らない面がある」という感覚が相手を引きつけ続ける。"
                             )
                             Divider().background(AppTheme.cardBorder)
                             BadBoyInsightRow(
                                 title: "応用：あなたが使う方法",
-                                body: "彼に対して同じ原理を使う。依存を見せず、自分の世界を持ち、「この人を理解したい」と思わせること。"
+                                content: "彼に対して同じ原理を使う。依存を見せず、自分の世界を持ち、「この人を理解したい」と思わせること。"
                             )
                         }
                         .padding(16)
@@ -238,14 +238,14 @@ struct InfoRow: View {
 
 struct BadBoyInsightRow: View {
     let title: String
-    let body: String
+    let content: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
                 .font(.system(size: 12, weight: .bold))
                 .foregroundColor(AppTheme.danger)
-            Text(body)
+            Text(content)
                 .font(.system(size: 11))
                 .foregroundColor(AppTheme.textPrimary)
                 .lineSpacing(3)
