@@ -2,8 +2,15 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selectedTab = 0
-    @State private var selectedGoal: Goal? = nil
+    @State private var selectedGoal: Goal?
     @State private var strategyInput = StrategyInput()
+
+    private let tabs: [(icon: String, label: String)] = [
+        ("house.fill", "ホーム"),
+        ("heart.text.square.fill", "攻略診断"),
+        ("brain.head.profile", "心理学"),
+        ("shield.lefthalf.filled", "危険度")
+    ]
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -22,54 +29,56 @@ struct ContentView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
 
-            // Custom tab bar
-            VStack(spacing: 0) {
-                Divider()
-                    .background(AppTheme.cardBorder)
+            VStack(spacing: 8) {
+                BannerAdView()
+                    .frame(height: 50)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .padding(.horizontal, 18)
 
                 HStack(spacing: 0) {
-                    ForEach(tabs.indices, id: \.self) { i in
+                    ForEach(tabs.indices, id: \.self) { index in
                         TabBarItem(
-                            icon: tabs[i].icon,
-                            label: tabs[i].label,
-                            isSelected: selectedTab == i
+                            icon: tabs[index].icon,
+                            label: tabs[index].label,
+                            isSelected: selectedTab == index
                         ) {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                if i == 1, let goal = selectedGoal {
-                                    strategyInput.goal = goal
-                                }
-                                selectedTab = i
+                            if index == 1, let selectedGoal {
+                                strategyInput.goal = selectedGoal
+                            }
+                            withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
+                                selectedTab = index
                             }
                         }
                     }
                 }
-                .padding(.top, 8)
-                .padding(.bottom, 28)
-                .background(AppTheme.bg)
-            }
-
-            // Ad banner above tab bar
-            VStack {
-                Spacer()
-                BannerAdView()
-                    .frame(height: 50)
-                    .padding(.bottom, 88)
+                .padding(.top, 10)
+                .padding(.bottom, 24)
+                .padding(.horizontal, 10)
+                .background(
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .overlay(
+                            Rectangle()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [AppTheme.pink.opacity(0.45), .clear, AppTheme.purple.opacity(0.35)],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .frame(height: 1),
+                            alignment: .top
+                        )
+                )
             }
         }
         .onChange(of: selectedGoal) { _, newGoal in
-            if let goal = newGoal {
-                strategyInput.goal = goal
+            if let newGoal {
+                strategyInput.goal = newGoal
             }
         }
         .ignoresSafeArea(edges: .bottom)
     }
-
-    let tabs: [(icon: String, label: String)] = [
-        ("house.fill", "ホーム"),
-        ("sparkles", "攻略"),
-        ("brain.head.profile", "心理学"),
-        ("exclamationmark.triangle.fill", "痛客"),
-    ]
 }
 
 struct TabBarItem: View {
@@ -80,16 +89,26 @@ struct TabBarItem: View {
 
     var body: some View {
         Button(action: onTap) {
-            VStack(spacing: 4) {
-                Image(systemName: icon)
-                    .font(.system(size: 20))
-                    .foregroundColor(isSelected ? AppTheme.pink : AppTheme.textSecondary)
-                    .shadow(color: isSelected ? AppTheme.pinkGlow : .clear, radius: 4)
+            VStack(spacing: 5) {
+                ZStack {
+                    if isSelected {
+                        Circle()
+                            .fill(AppTheme.pink.opacity(0.26))
+                            .frame(width: 42, height: 42)
+                            .shadow(color: AppTheme.pinkGlow, radius: 14)
+                    }
+                    Image(systemName: icon)
+                        .font(.system(size: 19, weight: .semibold))
+                        .foregroundStyle(isSelected ? AppTheme.titleGradient : LinearGradient(colors: [AppTheme.textSecondary], startPoint: .top, endPoint: .bottom))
+                }
+                .frame(height: 34)
+
                 Text(label)
-                    .font(.system(size: 9, weight: .medium))
-                    .foregroundColor(isSelected ? AppTheme.pink : AppTheme.textSecondary)
+                    .font(.system(size: 10, weight: isSelected ? .bold : .medium))
+                    .foregroundColor(isSelected ? AppTheme.pinkLight : AppTheme.textSecondary)
             }
             .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }

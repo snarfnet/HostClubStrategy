@@ -1,7 +1,5 @@
 import Foundation
 
-// MARK: - Psychology Theories
-
 enum AttachmentStyle: String, CaseIterable, Identifiable {
     case secure = "secure"
     case anxious = "anxious"
@@ -13,7 +11,7 @@ enum AttachmentStyle: String, CaseIterable, Identifiable {
     var label: String {
         switch self {
         case .secure: return "安定型"
-        case .anxious: return "不安型（アンビバレント）"
+        case .anxious: return "不安型"
         case .avoidant: return "回避型"
         case .fearful: return "恐れ型"
         }
@@ -21,28 +19,28 @@ enum AttachmentStyle: String, CaseIterable, Identifiable {
 
     var description: String {
         switch self {
-        case .secure: return "感情が安定。適度な距離感を保てる。最も攻略しやすいタイプ。"
-        case .anxious: return "愛情に飢えている。頻繁な確認・寂しがり屋。構ってあげると落ちやすいが依存注意。"
-        case .avoidant: return "距離を詰めると逃げる。自立心が強い。追いかけすぎると逆効果。追わせる戦略が有効。"
-        case .fearful: return "傷つくのを恐れている。信頼構築に時間がかかる。じっくり安心感を与えること。"
+        case .secure: return "安心感があり、誠実で信頼できる"
+        case .anxious: return "寂しがりで、不安を感じやすい"
+        case .avoidant: return "距離を置きたがり、感情表現が少ない"
+        case .fearful: return "人を信じたいけど、傷つくのが怖い"
         }
     }
 
     var strategy: String {
         switch self {
-        case .secure: return "素直に気持ちを伝えてOK。高額指名よりも「一緒にいると楽しい」という雰囲気を作ろう。"
-        case .anxious: return "「あなたのことが気になってる」という言葉に敏感。LINEの返信速度で感情が動く。返信は少し遅めにして「待たせる」テクを使うと効果的。"
-        case .avoidant: return "追いかけてはNG。次の来店を焦らず、あえて間隔をあける。彼から「久しぶり」と言わせれば勝ち。"
-        case .fearful: return "まず安全な人間だと思わせる。自分の弱さを少し見せる「自己開示」が有効。急かさないこと。"
+        case .secure: return "駆け引きより素直さが刺さるタイプ。感謝や楽しかった気持ちを短く伝え、次に会う理由を自然に残して。"
+        case .anxious: return "安心材料に反応しやすいタイプ。急に詰めず、短い肯定をこまめに入れて、返信は焦らしすぎないのが有効。"
+        case .avoidant: return "追われるほど逃げやすいタイプ。予定や感情を押しつけず、軽い余韻だけ残して相手から来る余白を作って。"
+        case .fearful: return "信頼構築に時間がかかるタイプ。急接近より、秘密を守る、否定しない、約束を破らないの積み重ねが強い。"
         }
     }
 
     var warningSign: String {
         switch self {
-        case .secure: return "感情的になると引かれる。冷静に。"
-        case .anxious: return "重いと感じたら急に冷たくなる。依存しすぎ注意。"
+        case .secure: return "重い確認や試し行動が増えると一気に引かれる。"
+        case .anxious: return "依存に見えるほど連絡すると、安心より負担が勝つ。"
         case .avoidant: return "追いかけすぎると消える。距離感が命。"
-        case .fearful: return "裏切りを感じると完全にシャットダウン。信頼を最優先に。"
+        case .fearful: return "裏切りを感じると完全に閉じる。信頼を最優先に。"
         }
     }
 }
@@ -54,124 +52,105 @@ struct PsychologyTactic: Identifiable {
     let theory: String
     let howTo: String
     let caution: String
-    let effectiveness: Int // 1-5
+    let effectiveness: Int
 }
 
 enum PsychologyEngine {
-
     static let allTactics: [PsychologyTactic] = [
-        PsychologyTactic(
-            name: "ツァイガルニク効果",
-            nameEN: "Zeigarnik Effect",
-            theory: "未完成・未解決のことが記憶に残りやすい心理。話を途中で終わらせると相手の頭から離れなくなる。",
-            howTo: "会話の途中で「あ、これ話すの恥ずかしいんだけど...また今度」と打ち切る。LINEの返信をたまに未完のまま送る（「明日続き話すね」）。",
-            caution: "やりすぎると焦らしすぎになる。月2回程度に抑えること。",
-            effectiveness: 5
-        ),
-        PsychologyTactic(
-            name: "希少性効果",
-            nameEN: "Scarcity Principle",
-            theory: "手に入りにくいものほど価値が高く見える。常連になっても「毎週来る女」になると飽きられる。",
-            howTo: "来店頻度を意図的に不定期にする。「忙しくてなかなか来れなくて」と言いつつ、急に来店。「あなたのためだけに時間を作った」感を演出。",
-            caution: "長期間来ないと存在を忘れられる。最長でも3週間以上は空けないこと。",
-            effectiveness: 5
-        ),
-        PsychologyTactic(
-            name: "返報性の原理",
-            nameEN: "Reciprocity Principle",
-            theory: "何かをもらうとお返しをしたくなる人間の本能。先に与えることで相手に義務感を生む。",
-            howTo: "誕生日や記念日にさりげないプレゼントを渡す（高額すぎないものが◎）。「あなたのためにわざわざ」という演出が鍵。彼が何か話したら「覚えてたよ」と後日さりげなく触れる。",
-            caution: "媚びてるように見えると逆効果。さりげなさが命。",
-            effectiveness: 4
-        ),
         PsychologyTactic(
             name: "ミラーリング",
             nameEN: "Mirroring",
-            theory: "相手の言動・口癖・テンポを無意識に真似ると親近感が生まれる。人は自分に似た人を好む。",
-            howTo: "相手の話すスピード・声のトーンに合わせる。よく使う言葉・笑い方を自然に取り入れる。飲み物を一緒に頼む・乾杯のタイミングを合わせる。",
-            caution: "わざとらしいと気持ち悪い。自然に、少しずつ。",
-            effectiveness: 4
+            theory: "相手のテンポ、言葉選び、リアクションに自然に合わせると親近感が生まれやすい。",
+            howTo: "話す速度や声量を少し合わせる。彼が使った言葉を一度だけ拾い、同じ空気で返す。",
+            caution: "真似している感が出ると逆効果。少しだけ、自然に。",
+            effectiveness: 5
         ),
         PsychologyTactic(
-            name: "吊り橋効果",
-            nameEN: "Suspension Bridge Effect",
-            theory: "ドキドキ・緊張感がある状況で会うと、その興奮を相手への恋愛感情と錯覚しやすい。",
-            howTo: "「実は今日すごく緊張してた」「あなたといると心臓がうるさい」と素直に言う。誕生日・特別な日に会う。サプライズ演出を受けた直後に感謝を伝える。",
-            caution: "日常的な普通の訪問では効果が薄い。非日常感を演出する場面を選ぶ。",
-            effectiveness: 3
-        ),
-        PsychologyTactic(
-            name: "自己開示の返報性",
-            nameEN: "Self-Disclosure Reciprocity",
-            theory: "自分の弱さ・秘密を話すと、相手も同じくらい開示したくなる。距離が縮まる。",
-            howTo: "「こんな話、他の人にはしてないんだけど」と前置きして少し個人的な話をする。家族の話・過去の恋愛・コンプレックスなどを少しだけ見せる。",
-            caution: "重すぎる話は引かれる。「ちょっとだけ見せる」がポイント。",
+            name: "希少性の原理",
+            nameEN: "Scarcity Principle",
+            theory: "いつでも手に入るものより、少しだけ届きにくいものの価値は高く見えやすい。",
+            howTo: "来店や連絡を詰めすぎず、予定のある生活感を見せる。会えた時間の濃さで印象を残す。",
+            caution: "空けすぎると忘れられる。頻度よりリズムを大切に。",
             effectiveness: 4
         ),
         PsychologyTactic(
             name: "単純接触効果",
             nameEN: "Mere Exposure Effect",
-            theory: "接触回数が増えるほど好感度が上がる。見慣れた顔・名前は安心感につながる。",
-            howTo: "来店回数を増やす（週1が理想）。LINEは短くてもいいので毎日少し送る。指名を続けることで「この子はいつもいる」という存在感を作る。",
-            caution: "接触しすぎると「当たり前の存在」になり新鮮さが消える。希少性とのバランスが命。",
+            theory: "ほどよい接触回数が増えるほど安心感と好意が育ちやすい。",
+            howTo: "短い連絡、自然な来店、名前を呼ぶ回数を積み上げる。長文より軽い接点を重ねる。",
+            caution: "接触しすぎると新鮮さが落ちる。余白とセットで使う。",
+            effectiveness: 4
+        ),
+        PsychologyTactic(
+            name: "吊り橋効果",
+            nameEN: "Suspension Bridge Effect",
+            theory: "特別な日や少し緊張する場面の高揚感は、恋愛感情として記憶に残りやすい。",
+            howTo: "誕生日、イベント、サプライズ後など感情が動く日に、感謝や好意を短く伝える。",
+            caution: "普通の日に無理やり演出しても弱い。場面選びが大事。",
             effectiveness: 3
         ),
         PsychologyTactic(
-            name: "ゲイン・ロス効果",
-            nameEN: "Gain-Loss Effect",
-            theory: "最初に否定→後で肯定されると、最初から肯定されるより好感度が高くなる。",
-            howTo: "最初の数回はあまり媚びない・ちょっとクールに接する。徐々に打ち解けていく演出をする。突然「あなたって実はすごく面白いと思う」と言う。",
-            caution: "最初からやりすぎると「冷たい客」認定。微妙な匙加減が必要。",
+            name: "自己開示の返報性",
+            nameEN: "Self-Disclosure Reciprocity",
+            theory: "少しだけ本音を見せると、相手も内側を見せたくなりやすい。",
+            howTo: "重すぎない弱さや夢を一つだけ話す。聞いてくれてうれしい、で締めると余韻が残る。",
+            caution: "悩み相談を長くしすぎると負担になる。明るい出口を用意する。",
             effectiveness: 4
         ),
+        PsychologyTactic(
+            name: "ゲインロス効果",
+            nameEN: "Gain-Loss Effect",
+            theory: "最初より評価が上がったと感じると、好意の伸び幅が印象に残りやすい。",
+            howTo: "最初は控えめに、後半で素直な褒めや笑顔を出す。変化を彼に感じさせる。",
+            caution: "冷たくしすぎるとただの脈なしに見える。柔らかい温度差に留める。",
+            effectiveness: 4
+        )
     ]
 
     static func recommendTactics(for input: StrategyInput, attachmentStyle: AttachmentStyle) -> [PsychologyTactic] {
-        var result: [PsychologyTactic] = []
+        var names: [String] = []
 
         switch attachmentStyle {
-        case .avoidant:
-            result.append(contentsOf: allTactics.filter { $0.name == "希少性効果" || $0.name == "ゲイン・ロス効果" })
-        case .anxious:
-            result.append(contentsOf: allTactics.filter { $0.name == "返報性の原理" || $0.name == "自己開示の返報性" })
-        case .fearful:
-            result.append(contentsOf: allTactics.filter { $0.name == "自己開示の返報性" || $0.name == "ミラーリング" })
         case .secure:
-            result.append(contentsOf: allTactics.filter { $0.name == "ツァイガルニク効果" || $0.name == "吊り橋効果" })
+            names += ["ミラーリング", "吊り橋効果"]
+        case .anxious:
+            names += ["自己開示の返報性", "単純接触効果"]
+        case .avoidant:
+            names += ["希少性の原理", "ゲインロス効果"]
+        case .fearful:
+            names += ["ミラーリング", "自己開示の返報性"]
         }
 
         switch input.goal {
         case .friend:
-            result.append(contentsOf: allTactics.filter { $0.name == "単純接触効果" || $0.name == "ミラーリング" })
+            names += ["単純接触効果", "ミラーリング"]
         case .boyfriend:
-            result.append(contentsOf: allTactics.filter { $0.name == "ツァイガルニク効果" || $0.name == "吊り橋効果" })
+            names += ["吊り橋効果", "ゲインロス効果"]
         case .marriage:
-            result.append(contentsOf: allTactics.filter { $0.name == "返報性の原理" || $0.name == "ゲイン・ロス効果" })
+            names += ["自己開示の返報性", "単純接触効果"]
         case .exclusive:
-            result.append(contentsOf: allTactics.filter { $0.name == "希少性効果" || $0.name == "ツァイガルニク効果" })
+            names += ["希少性の原理", "ゲインロス効果"]
         }
 
-        // Deduplicate
         var seen = Set<String>()
-        return result.filter { seen.insert($0.name).inserted }
+        let orderedNames = names.filter { seen.insert($0).inserted }
+        return orderedNames.compactMap { name in allTactics.first { $0.name == name } }
     }
 
     static func analyzeStrategy(input: StrategyInput, attachmentStyle: AttachmentStyle) -> StrategyResult {
         var score = 0
         var tips: [String] = []
-        var warningMsg: String? = nil
+        var warningMsg: String?
         var warningLevel: WarningLevel = .none
 
-        // Mood scoring
         switch input.hostMood {
         case .warm: score += 3
         case .flirty: score += 2
-        case .normal: score += 0
+        case .normal: break
         case .cold: score -= 2
         case .busy: score -= 1
         }
 
-        // Spending
         switch input.spending {
         case .none: score -= 1
         case .low: score += 1
@@ -180,33 +159,52 @@ enum PsychologyEngine {
         case .extreme: score += 4
         }
 
-        // Frequency
         switch input.frequency {
-        case .first: score += 1; tips.append("初回は印象を残すことに集中。「また来たい」と思わせるだけでOK。")
-        case .rare: score -= 1; tips.append("来店が少ない。まず月1〜2回に増やすことを目標に。")
-        case .monthly: score += 1
-        case .weekly: score += 2
-        case .regular: score += 3; tips.append("常連ポジション確立済み。次は「特別な常連」への格上げを狙う。")
+        case .first:
+            score += 1
+            tips.append("初回は印象づくりが最優先。好意よりも「また話したい」を残して。")
+        case .rare:
+            score -= 1
+            tips.append("接点が少なめ。まずは月1〜2回の安定したリズムを作ると強いです。")
+        case .monthly:
+            score += 1
+        case .weekly:
+            score += 2
+        case .regular:
+            score += 3
+            tips.append("常連としての土台はあり。次は特別感を少しだけ上げる段階。")
         }
 
-        // Bonuses
-        if input.hasLineSNS { score += 2; tips.append("LINE連絡先ゲット済み！まずは短いメッセージで存在感を出そう。") }
-        if input.hasPrivateMeet { score += 3; tips.append("店外会合あり。これは本命フラグの可能性大。次の一手を慎重に。") }
-        if input.calledByName { score += 1; tips.append("名前で呼んでくれてる。親密度は確実に上がっている証拠。") }
-        if input.receivedGift { score += 2; tips.append("プレゼントをもらった。返報性の原理で、次はあなたから何か渡す番。") }
-        if !input.otherCustomersExist { score += 2; tips.append("競合客が少ない。今がチャンス！攻め時。") }
+        if input.hasLineSNS {
+            score += 2
+            tips.append("LINE/SNSがあるなら、短く軽い連絡で存在感を残すのが有効。")
+        }
+        if input.hasPrivateMeet {
+            score += 3
+            tips.append("店外で会えているなら本命フラグ強め。焦らず次の一手を丁寧に。")
+        }
+        if input.calledByName {
+            score += 1
+            tips.append("名前で呼ばれているのは親密度アップのサイン。自然に受け取って。")
+        }
+        if input.receivedGift {
+            score += 2
+            tips.append("贈り物をもらったなら、次はあなたから小さな返報を。")
+        }
+        if !input.otherCustomersExist {
+            score += 2
+            tips.append("競合感が少ない今はチャンス。会話の質で差をつけて。")
+        }
 
-        // Psychology adjustments
         if attachmentStyle == .avoidant && input.frequency == .regular {
             score -= 2
-            warningMsg = "回避型に毎週来店は逆効果。意図的に頻度を落として「追わせる」戦略に切り替えて。"
+            warningMsg = "回避型に高頻度接触は逆効果になりやすいです。少し引いて余白を作って。"
             warningLevel = .caution
         }
         if attachmentStyle == .anxious && input.hasLineSNS {
-            tips.append("不安型は返信が早い。たまに少し遅らせることで「気になる存在」になれる。")
+            tips.append("不安型は反応速度に敏感。返信を遅らせる駆け引きは控えめに。")
         }
 
-        // Goal difficulty adjustment
         switch input.goal {
         case .friend: break
         case .boyfriend: score -= 1
@@ -214,21 +212,20 @@ enum PsychologyEngine {
         case .exclusive: score -= 5
         }
 
-        // Determine timing
         let timing: TimingAdvice
         if score >= 8 {
             timing = .goNow
-            tips.append("今が最高のタイミング！気持ちを行動で示すチャンス。")
+            tips.append("今が最も動きやすいタイミング。感情は短く、明るく伝えて。")
         } else if score >= 4 {
             timing = .goodTiming
-            tips.append("いい流れ。少しずつ距離を縮めよう。")
+            tips.append("流れは悪くありません。少しずつ距離を縮めて。")
         } else if score >= 0 {
             timing = .waitMore
-            tips.append("まだ土台が足りない。焦らず関係を積み重ねて。")
+            tips.append("まだ土台づくりの段階。焦らず安心感を積み上げて。")
         } else {
             timing = .danger
             warningLevel = .danger
-            warningMsg = warningMsg ?? "状況が厳しい。一度リセットして基本に戻ろう。"
+            warningMsg = warningMsg ?? "今は押すほど逆効果になりやすいです。一度リセットして基本に戻って。"
         }
 
         return StrategyResult(

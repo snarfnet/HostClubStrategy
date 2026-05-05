@@ -10,34 +10,37 @@ enum Goal: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .friend: return "友達になりたい"
-        case .boyfriend: return "彼氏になってほしい"
-        case .marriage: return "結婚したい！"
+        case .friend: return "まずは仲良くなりたい"
+        case .boyfriend: return "本命にしたい"
+        case .marriage: return "将来を考えてほしい"
         case .exclusive: return "私だけを見てほしい"
         }
     }
+
     var titleEN: String {
         switch self {
-        case .friend: return "Just Friends"
-        case .boyfriend: return "Boyfriend Mode"
-        case .marriage: return "Marriage Goal"
-        case .exclusive: return "Exclusive Only"
+        case .friend: return "Build Trust"
+        case .boyfriend: return "Make Him Fall for Me"
+        case .marriage: return "Long-Term Love"
+        case .exclusive: return "Exclusive Attention"
         }
     }
+
     var icon: String {
         switch self {
-        case .friend: return "star.fill"
+        case .friend: return "sparkles"
         case .boyfriend: return "heart.fill"
         case .marriage: return "crown.fill"
         case .exclusive: return "lock.heart.fill"
         }
     }
+
     var description: String {
         switch self {
-        case .friend: return "まず距離を縮める段階。焦らず自然体で。"
-        case .boyfriend: return "特別な存在になる作戦。感情に訴えるタイミングが鍵。"
-        case .marriage: return "本気度を見せる。売掛・本指名の積み上げが必要。"
-        case .exclusive: return "最高難度。No.1の心を独占する覚悟が必要。"
+        case .friend: return "距離を縮める前段階。自然体で、また会いたいと思わせることを優先。"
+        case .boyfriend: return "特別な存在になる作戦。感情を出すタイミングと余白づくりが鍵。"
+        case .marriage: return "長期目線で信頼を積む作戦。重さより安定感と生活感の見せ方が大切。"
+        case .exclusive: return "競合の中で印象を残す作戦。追いすぎず、希少性と安心感の両立が必要。"
         }
     }
 }
@@ -50,18 +53,20 @@ enum HostMood: String, CaseIterable, Identifiable {
     case busy = "busy"
 
     var id: String { rawValue }
+
     var label: String {
         switch self {
-        case .warm: return "優しい・甘い"
-        case .normal: return "普通・営業スマイル"
-        case .cold: return "そっけない・冷たい"
-        case .flirty: return "やたら距離が近い"
-        case .busy: return "忙しそう・余裕なし"
+        case .warm: return "笑顔多め"
+        case .normal: return "普通"
+        case .cold: return "そっけない"
+        case .flirty: return "ヤキモチ"
+        case .busy: return "忙しそう"
         }
     }
+
     var icon: String {
         switch self {
-        case .warm: return "flame.fill"
+        case .warm: return "face.smiling.fill"
         case .normal: return "minus.circle.fill"
         case .cold: return "snowflake"
         case .flirty: return "sparkles"
@@ -78,13 +83,14 @@ enum SpendingLevel: String, CaseIterable, Identifiable {
     case extreme = "extreme"
 
     var id: String { rawValue }
+
     var label: String {
         switch self {
-        case .none: return "ほぼ使ってない"
-        case .low: return "ちょっと（〜3万）"
-        case .medium: return "まあまあ（3〜10万）"
-        case .high: return "かなり（10〜30万）"
-        case .extreme: return "本気（30万〜）"
+        case .none: return "ほぼ使っていない"
+        case .low: return "少しだけ"
+        case .medium: return "ほどほど"
+        case .high: return "かなり使っている"
+        case .extreme: return "本命級に使っている"
         }
     }
 }
@@ -97,13 +103,14 @@ enum VisitFrequency: String, CaseIterable, Identifiable {
     case regular = "regular"
 
     var id: String { rawValue }
+
     var label: String {
         switch self {
         case .first: return "初回"
-        case .rare: return "たまに（月1未満）"
+        case .rare: return "たまに"
         case .monthly: return "月1〜2回"
         case .weekly: return "週1回"
-        case .regular: return "週2回以上の常連"
+        case .regular: return "週2回以上"
         }
     }
 }
@@ -129,8 +136,8 @@ struct StrategyResult {
 }
 
 enum TimingAdvice: String {
-    case goNow = "今すぐ動け！"
-    case waitMore = "もう少し待て"
+    case goNow = "今すぐアプローチ！"
+    case waitMore = "もう少し待って"
     case goodTiming = "チャンスあり"
     case danger = "要注意"
 }
@@ -152,55 +159,55 @@ struct PainfulCustomerCheck {
     }
 
     static let items: [Item] = [
-        Item(behavior: "連日の大量LINEや電話",
+        Item(behavior: "連日の長文LINEや電話",
              behaviorEN: "Excessive daily messages/calls",
-             risk: "ブロック→フェードアウト確定",
-             riskEN: "Block and fade-out guaranteed",
+             risk: "返信負荷が上がり、距離を置かれやすい",
+             riskEN: "High reply pressure causes fade-out",
              severity: .serious),
-        Item(behavior: "他の客を悪く言う・嫉妬爆発",
+        Item(behavior: "他のお客様の悪口を言う",
              behaviorEN: "Badmouthing other customers",
-             risk: "スタッフに共有されて出禁候補入り",
+             risk: "スタッフ間で警戒され、出禁候補になりやすい",
              riskEN: "Staff will flag you for potential ban",
              severity: .fatal),
-        Item(behavior: "お店の外でこっそり待ち伏せ",
+        Item(behavior: "お店の外で待ち伏せする",
              behaviorEN: "Waiting outside the club secretly",
-             risk: "即出禁・警察案件",
+             risk: "即出禁や警察相談につながる可能性",
              riskEN: "Immediate ban, possible police report",
              severity: .fatal),
-        Item(behavior: "「本当は好きでしょ」と詰める",
-             behaviorEN: "Pressuring 'you actually like me, right?'",
-             risk: "幻滅→距離を置かれる",
+        Item(behavior: "本当は好きでしょ？と詰める",
+             behaviorEN: "Pressuring his feelings",
+             risk: "営業の余白が消え、心理的距離を置かれる",
              riskEN: "He will create distance from you",
              severity: .serious),
-        Item(behavior: "売掛（ツケ）を踏み倒す",
-             behaviorEN: "Not paying your tab (running up debt)",
-             risk: "出禁＋法的措置の可能性",
+        Item(behavior: "売掛や支払いを軽く見る",
+             behaviorEN: "Not paying your tab",
+             risk: "信用低下、出禁、法的対応の可能性",
              riskEN: "Ban + possible legal action",
              severity: .fatal),
-        Item(behavior: "SNSで店やホストの写真を無断投稿",
+        Item(behavior: "無断で写真や店情報をSNS投稿",
              behaviorEN: "Posting unauthorized photos on SNS",
-             risk: "出禁・プライバシー問題",
+             risk: "プライバシー問題で強く警戒される",
              riskEN: "Ban for privacy violation",
              severity: .serious),
-        Item(behavior: "「私のことどう思ってる？」と毎回聞く",
-             behaviorEN: "Asking 'how do you feel about me?' every time",
-             risk: "営業感を壊して興醒めされる",
+        Item(behavior: "私のことどう思ってる？を毎回聞く",
+             behaviorEN: "Asking his feelings every time",
+             risk: "空気が重くなり、会話の楽しさが落ちる",
              riskEN: "Breaks the fantasy, kills the mood",
              severity: .mild),
-        Item(behavior: "酔って暴言・泣き崩れる",
-             behaviorEN: "Drunk outbursts or emotional breakdowns",
-             risk: "スタッフ全員に知られる・入店断り可能性",
-             riskEN: "Entire staff will know, possible refusal of entry",
+        Item(behavior: "酔って暴言や泣き崩れをする",
+             behaviorEN: "Drunk outbursts or breakdowns",
+             risk: "店全体に共有され、入店しづらくなる",
+             riskEN: "Entire staff will know",
              severity: .serious),
-        Item(behavior: "担当以外のホストに媚びを売る",
-             behaviorEN: "Flirting with other hosts to make him jealous",
-             risk: "嫉妬作戦は逆効果・信頼を失う",
+        Item(behavior: "嫉妬させるため他ホストに過剰接近",
+             behaviorEN: "Flirting with other hosts for jealousy",
+             risk: "駆け引きが見えすぎて信頼を失いやすい",
              riskEN: "Jealousy tactics backfire badly",
              severity: .mild),
-        Item(behavior: "「愛してる」「結婚して」を初期から連発",
+        Item(behavior: "最初から好き、結婚してを連発",
              behaviorEN: "Declaring love or marriage from the start",
-             risk: "重い客認定→避けられる",
-             riskEN: "Labeled 'intense customer', he will avoid you",
-             severity: .serious),
+             risk: "重いお客様認定され、避けられやすい",
+             riskEN: "Labeled intense, he will avoid you",
+             severity: .serious)
     ]
 }

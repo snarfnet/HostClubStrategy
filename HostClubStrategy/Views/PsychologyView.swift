@@ -1,144 +1,112 @@
 import SwiftUI
 
 struct PsychologyView: View {
-    @State private var selectedTactic: PsychologyTactic? = nil
+    @State private var selectedTactic: PsychologyTactic?
 
     var body: some View {
         ZStack {
-            LinearGradient(colors: [AppTheme.bg, AppTheme.bgMid],
-                           startPoint: .top, endPoint: .bottom)
-                .ignoresSafeArea()
+            AppBackground()
 
-            ScrollView {
-                VStack(spacing: 20) {
-                    VStack(spacing: 6) {
-                        Text("心理学テクニック")
-                            .font(.system(size: 28, weight: .black))
-                            .foregroundStyle(
-                                LinearGradient(colors: [AppTheme.gold, AppTheme.pinkLight],
-                                               startPoint: .leading, endPoint: .trailing)
-                            )
-                            .shadow(color: AppTheme.gold.opacity(0.4), radius: 8)
-                        Text("Psychology Tactics Library")
-                            .font(.system(size: 13))
-                            .foregroundColor(AppTheme.textSecondary)
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 22) {
+                    header
+                    introCard
+                    attachmentSection
+                    tacticsSection
+                    mindsetSection
+                }
+                .padding(.horizontal, 18)
+                .padding(.top, 32)
+                .padding(.bottom, 150)
+            }
+        }
+    }
+
+    private var header: some View {
+        VStack(spacing: 8) {
+            Text("心理学テクニック")
+                .font(.system(size: 30, weight: .black))
+                .foregroundStyle(AppTheme.titleGradient)
+                .shadow(color: AppTheme.pinkGlow, radius: 12)
+            Text("Psychology Tactics Library")
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(AppTheme.textSecondary)
+        }
+    }
+
+    private var introCard: some View {
+        ZStack(alignment: .trailing) {
+            VStack(alignment: .leading, spacing: 8) {
+                Label("書籍ベースの恋愛心理学", systemImage: "book.closed.fill")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(AppTheme.gold)
+                Text("ホストクラブという特殊な距離感に合わせて、使いやすい心理テクだけを整理しました。")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(AppTheme.textSecondary)
+                    .lineSpacing(4)
+                    .padding(.trailing, 78)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            Image(systemName: "heart.text.square.fill")
+                .font(.system(size: 56, weight: .light))
+                .foregroundStyle(AppTheme.titleGradient)
+                .shadow(color: AppTheme.pinkGlow, radius: 16)
+        }
+        .padding(16)
+        .luxuryPanel(cornerRadius: 14, borderColor: AppTheme.gold.opacity(0.45), glowColor: AppTheme.gold.opacity(0.12))
+    }
+
+    private var attachmentSection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            SectionTitle(title: "愛着スタイル別 攻略法", subtitle: "Attachment Style Strategy", icon: "brain.head.profile")
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(AttachmentStyle.allCases) { style in
+                        AttachmentStyleCard(style: style)
                     }
-                    .padding(.top, 20)
+                }
+                .padding(.vertical, 2)
+            }
+        }
+    }
 
-                    // Intro card
-                    VStack(alignment: .leading, spacing: 8) {
-                        Label("書籍ベースの恋愛心理学", systemImage: "book.fill")
-                            .font(.system(size: 13, weight: .bold))
-                            .foregroundColor(AppTheme.gold)
-                        Text("300冊以上の恋愛・心理学書籍から厳選したテクニック集。ホストクラブという特殊な環境に最適化しています。")
-                            .font(.system(size: 12))
-                            .foregroundColor(AppTheme.textSecondary)
-                            .lineSpacing(4)
+    private var tacticsSection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            SectionTitle(title: "全テクニック一覧", subtitle: "All Tactics", icon: "list.star")
+
+            ForEach(PsychologyEngine.allTactics) { tactic in
+                TacticCard(tactic: tactic, isExpanded: selectedTactic?.id == tactic.id) {
+                    withAnimation(.spring(response: 0.32, dampingFraction: 0.84)) {
+                        selectedTactic = selectedTactic?.id == tactic.id ? nil : tactic
                     }
-                    .padding(14)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(AppTheme.gold.opacity(0.08))
-                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(AppTheme.gold.opacity(0.3), lineWidth: 1))
-                    )
-                    .padding(.horizontal, 16)
-
-                    // Attachment styles section
-                    VStack(alignment: .leading, spacing: 12) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Label("愛着スタイル別 攻略法", systemImage: "brain.head.profile")
-                                .font(.system(size: 17, weight: .bold))
-                                .foregroundColor(AppTheme.purple)
-                            Text("Attachment Style Strategy")
-                                .font(.system(size: 11))
-                                .foregroundColor(AppTheme.textSecondary)
-                        }
-                        .padding(.horizontal, 16)
-
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 12) {
-                                ForEach(AttachmentStyle.allCases) { style in
-                                    AttachmentStyleCard(style: style)
-                                }
-                            }
-                            .padding(.horizontal, 16)
-                        }
-                    }
-
-                    // All tactics
-                    VStack(alignment: .leading, spacing: 12) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Label("全テクニック一覧", systemImage: "list.star")
-                                .font(.system(size: 17, weight: .bold))
-                                .foregroundColor(AppTheme.pink)
-                            Text("Tactic Library")
-                                .font(.system(size: 11))
-                                .foregroundColor(AppTheme.textSecondary)
-                        }
-                        .padding(.horizontal, 16)
-
-                        ForEach(PsychologyEngine.allTactics) { tactic in
-                            TacticCard(tactic: tactic, isExpanded: selectedTactic?.id == tactic.id) {
-                                withAnimation(.spring(response: 0.3)) {
-                                    if selectedTactic?.id == tactic.id {
-                                        selectedTactic = nil
-                                    } else {
-                                        selectedTactic = tactic
-                                    }
-                                }
-                            }
-                            .padding(.horizontal, 16)
-                        }
-                    }
-
-                    // Bad boy psychology section (from books)
-                    VStack(alignment: .leading, spacing: 10) {
-                        Label("なぜ「悪い男」が選ばれるのか", systemImage: "flame.fill")
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(AppTheme.danger)
-                            .padding(.horizontal, 16)
-
-                        VStack(alignment: .leading, spacing: 12) {
-                            BadBoyInsightRow(
-                                title: "自信（Confidence）",
-                                content: "結果を恐れない姿勢。どんな状況でも「断られてもいい」という余裕が、逆に魅力的に映る。ホストが複数の客と接しても揺れないのはこのため。"
-                            )
-                            Divider().background(AppTheme.cardBorder)
-                            BadBoyInsightRow(
-                                title: "過度な依存をしない",
-                                content: "相手に必要以上に執着しない人間は希少性が高い。恋愛書籍では一貫して「追いかけすぎる側が不利」と語られる。"
-                            )
-                            Divider().background(AppTheme.cardBorder)
-                            BadBoyInsightRow(
-                                title: "ミステリアスさ（Not Fully Available）",
-                                content: "すべてをさらけ出さない。「まだ知らない面がある」という感覚が相手を引きつけ続ける。"
-                            )
-                            Divider().background(AppTheme.cardBorder)
-                            BadBoyInsightRow(
-                                title: "応用：あなたが使う方法",
-                                content: "彼に対して同じ原理を使う。依存を見せず、自分の世界を持ち、「この人を理解したい」と思わせること。"
-                            )
-                        }
-                        .padding(16)
-                        .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(AppTheme.card)
-                                .overlay(RoundedRectangle(cornerRadius: 16).stroke(AppTheme.cardBorder, lineWidth: 1))
-                        )
-                        .padding(.horizontal, 16)
-                    }
-
-                    Spacer(minLength: 40)
                 }
             }
         }
+    }
+
+    private var mindsetSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("選ばれる人の共通点", systemImage: "flame.fill")
+                .font(.system(size: 15, weight: .bold))
+                .foregroundColor(AppTheme.pinkLight)
+
+            InsightRow(title: "余白を持つ", content: "会えない時間を全部不安で埋めない。彼以外の生活がある人は、自然に魅力が残ります。")
+            Divider().background(AppTheme.cardBorder)
+            InsightRow(title: "感情をぶつけず、印象を残す", content: "好きという圧より、今日楽しかったという軽い余韻のほうが次につながりやすいです。")
+            Divider().background(AppTheme.cardBorder)
+            InsightRow(title: "お客様としての品を守る", content: "支払い、連絡頻度、他のお客様への態度。ここが安定している人は、店側からも信頼されます。")
+        }
+        .padding(16)
+        .luxuryPanel(cornerRadius: 14)
     }
 }
 
 struct AttachmentStyleCard: View {
     let style: AttachmentStyle
 
-    var color: Color {
+    private var color: Color {
         switch style {
         case .secure: return AppTheme.safe
         case .anxious: return AppTheme.pink
@@ -149,32 +117,34 @@ struct AttachmentStyleCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(style.label)
-                .font(.system(size: 13, weight: .bold))
-                .foregroundColor(color)
+            HStack {
+                Image(systemName: "heart.circle.fill")
+                    .font(.system(size: 24))
+                    .foregroundColor(color)
+                Text(style.label)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(color)
+            }
+
             Text(style.description)
-                .font(.system(size: 10))
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundColor(AppTheme.textPrimary)
+                .lineLimit(2)
+
+            Text(style.strategy)
+                .font(.system(size: 11, weight: .medium))
                 .foregroundColor(AppTheme.textSecondary)
                 .lineSpacing(3)
-                .lineLimit(4)
-            Divider().background(color.opacity(0.3))
-            Text(style.strategy)
-                .font(.system(size: 10))
-                .foregroundColor(AppTheme.textPrimary)
-                .lineSpacing(3)
                 .lineLimit(5)
-            Text("⚠ \(style.warningSign)")
-                .font(.system(size: 10))
+
+            Text(style.warningSign)
+                .font(.system(size: 10, weight: .medium))
                 .foregroundColor(AppTheme.warning)
                 .lineLimit(2)
         }
         .padding(14)
-        .frame(width: 220)
-        .background(
-            RoundedRectangle(cornerRadius: 14)
-                .fill(AppTheme.card)
-                .overlay(RoundedRectangle(cornerRadius: 14).stroke(color.opacity(0.4), lineWidth: 1))
-        )
+        .frame(width: 232, height: 190, alignment: .topLeading)
+        .luxuryPanel(cornerRadius: 12, borderColor: color.opacity(0.48), glowColor: color.opacity(0.12))
     }
 }
 
@@ -185,46 +155,46 @@ struct TacticCard: View {
 
     var body: some View {
         Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 10) {
-                HStack {
+            VStack(alignment: .leading, spacing: 11) {
+                HStack(spacing: 12) {
+                    ZStack {
+                        Circle()
+                            .fill(AppTheme.pink.opacity(0.16))
+                            .frame(width: 42, height: 42)
+                        Image(systemName: "sparkles")
+                            .foregroundColor(AppTheme.pinkLight)
+                    }
+
                     VStack(alignment: .leading, spacing: 3) {
                         Text(tactic.name)
-                            .font(.system(size: 16, weight: .bold))
+                            .font(.system(size: 15, weight: .bold))
                             .foregroundColor(AppTheme.textPrimary)
                         Text(tactic.nameEN)
-                            .font(.system(size: 11))
+                            .font(.system(size: 10, weight: .medium))
                             .foregroundColor(AppTheme.textSecondary)
                     }
+
                     Spacer()
-                    HStack(spacing: 3) {
-                        ForEach(0..<5, id: \.self) { i in
-                            Image(systemName: "star.fill")
-                                .font(.system(size: 10))
-                                .foregroundColor(i < tactic.effectiveness ? AppTheme.gold : AppTheme.textSecondary.opacity(0.3))
-                        }
-                    }
+                    RatingStars(value: tactic.effectiveness, size: 9)
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .font(.system(size: 12))
+                        .font(.system(size: 11, weight: .bold))
                         .foregroundColor(AppTheme.textSecondary)
-                        .padding(.leading, 6)
                 }
 
                 if isExpanded {
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 11) {
                         InfoRow(icon: "lightbulb.fill", color: AppTheme.gold, label: "理論", text: tactic.theory)
                         InfoRow(icon: "checkmark.circle.fill", color: AppTheme.safe, label: "やり方", text: tactic.howTo)
                         InfoRow(icon: "exclamationmark.triangle.fill", color: AppTheme.danger, label: "注意点", text: tactic.caution)
                     }
+                    .padding(.top, 4)
                 }
             }
             .padding(14)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(AppTheme.card)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 14)
-                            .stroke(isExpanded ? AppTheme.pink.opacity(0.5) : AppTheme.cardBorder, lineWidth: 1)
-                    )
+            .luxuryPanel(
+                cornerRadius: 12,
+                borderColor: isExpanded ? AppTheme.pink : AppTheme.cardBorder,
+                glowColor: isExpanded ? AppTheme.pinkGlow : .clear
             )
         }
         .buttonStyle(.plain)
@@ -238,30 +208,30 @@ struct InfoRow: View {
     let text: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 5) {
             Label(label, systemImage: icon)
                 .font(.system(size: 11, weight: .bold))
                 .foregroundColor(color)
             Text(text)
-                .font(.system(size: 11))
+                .font(.system(size: 11, weight: .medium))
                 .foregroundColor(AppTheme.textPrimary)
                 .lineSpacing(3)
         }
     }
 }
 
-struct BadBoyInsightRow: View {
+struct InsightRow: View {
     let title: String
     let content: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 5) {
             Text(title)
-                .font(.system(size: 12, weight: .bold))
-                .foregroundColor(AppTheme.danger)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundColor(AppTheme.pinkLight)
             Text(content)
-                .font(.system(size: 11))
-                .foregroundColor(AppTheme.textPrimary)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(AppTheme.textSecondary)
                 .lineSpacing(3)
         }
     }
