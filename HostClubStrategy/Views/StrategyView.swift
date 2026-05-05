@@ -5,101 +5,121 @@ struct StrategyView: View {
     @State private var attachmentStyle: AttachmentStyle = .secure
     @State private var showResult = false
     @State private var result: StrategyResult?
+    @State private var sparkleBurst = false
 
     var body: some View {
         ZStack {
             AppBackground()
 
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 18) {
-                    header
+            ScrollViewReader { proxy in
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 18) {
+                        Color.clear
+                            .frame(height: 0)
+                            .id("strategyTop")
 
-                    GoalBadge(goal: input.goal)
+                        header
 
-                    InputSection(title: "彼のタイプ（愛着スタイル）", titleEN: "His Attachment Style", icon: "heart.text.square.fill") {
-                        VStack(spacing: 10) {
-                            ForEach(AttachmentStyle.allCases) { style in
-                                AttachmentStyleRow(style: style, isSelected: attachmentStyle == style) {
-                                    withAnimation(.spring(response: 0.25, dampingFraction: 0.84)) {
-                                        attachmentStyle = style
+                        GoalBadge(goal: input.goal)
+
+                        InputSection(title: "彼のタイプ（愛着スタイル）", titleEN: "His Attachment Style", icon: "heart.text.square.fill") {
+                            VStack(spacing: 10) {
+                                ForEach(AttachmentStyle.allCases) { style in
+                                    AttachmentStyleRow(style: style, isSelected: attachmentStyle == style) {
+                                        withAnimation(.spring(response: 0.25, dampingFraction: 0.84)) {
+                                            attachmentStyle = style
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    InputSection(title: "今日の彼の態度", titleEN: "His Current Mood", icon: "sparkles") {
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 8) {
-                            ForEach(HostMood.allCases) { mood in
-                                MoodChip(mood: mood, isSelected: input.hostMood == mood) {
-                                    input.hostMood = mood
+                        InputSection(title: "今日の彼の態度", titleEN: "His Current Mood", icon: "sparkles") {
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 8) {
+                                ForEach(HostMood.allCases) { mood in
+                                    MoodChip(mood: mood, isSelected: input.hostMood == mood) {
+                                        input.hostMood = mood
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    InputSection(title: "これまでの使った金額", titleEN: "Total Spending", icon: "creditcard.fill") {
-                        VStack(spacing: 8) {
-                            ForEach(SpendingLevel.allCases) { level in
-                                SelectRow(label: level.label, isSelected: input.spending == level) {
-                                    input.spending = level
+                        InputSection(title: "これまでの使った金額", titleEN: "Total Spending", icon: "creditcard.fill") {
+                            VStack(spacing: 8) {
+                                ForEach(SpendingLevel.allCases) { level in
+                                    SelectRow(label: level.label, isSelected: input.spending == level) {
+                                        input.spending = level
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    InputSection(title: "来店頻度", titleEN: "Visit Frequency", icon: "calendar") {
-                        VStack(spacing: 8) {
-                            ForEach(VisitFrequency.allCases) { frequency in
-                                SelectRow(label: frequency.label, isSelected: input.frequency == frequency) {
-                                    input.frequency = frequency
+                        InputSection(title: "来店頻度", titleEN: "Visit Frequency", icon: "calendar") {
+                            VStack(spacing: 8) {
+                                ForEach(VisitFrequency.allCases) { frequency in
+                                    SelectRow(label: frequency.label, isSelected: input.frequency == frequency) {
+                                        input.frequency = frequency
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    InputSection(title: "進展済みの項目", titleEN: "Milestones", icon: "checkmark.seal.fill") {
-                        VStack(spacing: 12) {
-                            ToggleRow(label: "LINE / SNSの連絡先をゲット済み", isOn: $input.hasLineSNS)
-                            ToggleRow(label: "店外で会ったことがある", isOn: $input.hasPrivateMeet)
-                            ToggleRow(label: "名前で呼んでくれる", isOn: $input.calledByName)
-                            ToggleRow(label: "プレゼントをもらった", isOn: $input.receivedGift)
-                            ToggleRow(label: "競合する他のお客様がいる", isOn: $input.otherCustomersExist)
+                        InputSection(title: "進展済みの項目", titleEN: "Milestones", icon: "checkmark.seal.fill") {
+                            VStack(spacing: 12) {
+                                ToggleRow(label: "LINE / SNSの連絡先をゲット済み", isOn: $input.hasLineSNS)
+                                ToggleRow(label: "店外で会ったことがある", isOn: $input.hasPrivateMeet)
+                                ToggleRow(label: "名前で呼んでくれる", isOn: $input.calledByName)
+                                ToggleRow(label: "プレゼントをもらった", isOn: $input.receivedGift)
+                                ToggleRow(label: "競合する他のお客様がいる", isOn: $input.otherCustomersExist)
+                            }
+                        }
+
+                        Button {
+                            sparkleBurst = false
+                            result = PsychologyEngine.analyzeStrategy(input: input, attachmentStyle: attachmentStyle)
+                            withAnimation(.spring(response: 0.45, dampingFraction: 0.82)) {
+                                sparkleBurst = true
+                                showResult = true
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
+                                sparkleBurst = false
+                            }
+                        } label: {
+                            HStack(spacing: 10) {
+                                Image(systemName: "sparkles")
+                                Text("攻略を診断する")
+                                    .font(.system(size: 19, weight: .black))
+                                Image(systemName: "sparkles")
+                            }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 19)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(AppTheme.jewelGradient)
+                                    .shadow(color: AppTheme.pinkGlow, radius: 18)
+                            )
+                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(AppTheme.pinkLight.opacity(0.65), lineWidth: 1))
+                            .overlay(SparkleBurstView(isActive: sparkleBurst).allowsHitTesting(false))
+                        }
+                        .buttonStyle(.plain)
+
+                        if showResult, let result {
+                            StrategyResultView(result: result, input: input, attachmentStyle: attachmentStyle)
+                                .transition(.move(edge: .bottom).combined(with: .opacity))
                         }
                     }
-
-                    Button {
-                        result = PsychologyEngine.analyzeStrategy(input: input, attachmentStyle: attachmentStyle)
-                        withAnimation(.spring(response: 0.45, dampingFraction: 0.82)) {
-                            showResult = true
-                        }
-                    } label: {
-                        HStack(spacing: 10) {
-                            Image(systemName: "sparkles")
-                            Text("攻略を診断する")
-                                .font(.system(size: 17, weight: .black))
-                            Image(systemName: "sparkles")
-                        }
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 18)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(AppTheme.jewelGradient)
-                                .shadow(color: AppTheme.pinkGlow, radius: 18)
-                        )
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(AppTheme.pinkLight.opacity(0.65), lineWidth: 1))
-                    }
-                    .buttonStyle(.plain)
-
-                    if showResult, let result {
-                        StrategyResultView(result: result, input: input, attachmentStyle: attachmentStyle)
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .padding(.horizontal, 18)
+                    .padding(.top, 32)
+                    .padding(.bottom, 150)
+                }
+                .onChange(of: input.goal) { _, _ in
+                    result = nil
+                    showResult = false
+                    withAnimation(.easeInOut(duration: 0.32)) {
+                        proxy.scrollTo("strategyTop", anchor: .top)
                     }
                 }
-                .padding(.horizontal, 18)
-                .padding(.top, 32)
-                .padding(.bottom, 150)
             }
         }
     }
@@ -127,13 +147,43 @@ struct GoalBadge: View {
         HStack(spacing: 10) {
             Image(systemName: goal.icon)
             Text("目標：\(goal.title)")
-                .font(.system(size: 14, weight: .bold))
+                .font(.system(size: 16, weight: .bold))
             Spacer()
         }
         .foregroundColor(AppTheme.pinkLight)
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
         .luxuryPanel(cornerRadius: 12, borderColor: AppTheme.pink, glowColor: AppTheme.pinkGlow, fill: AppTheme.pink.opacity(0.12))
+    }
+}
+
+struct SparkleBurstView: View {
+    let isActive: Bool
+
+    private let particles: [(x: CGFloat, y: CGFloat, size: CGFloat, delay: Double)] = [
+        (-120, -28, 18, 0.00), (-78, -44, 12, 0.04), (-36, -58, 16, 0.08),
+        (18, -54, 11, 0.02), (58, -42, 17, 0.06), (116, -22, 13, 0.10),
+        (-96, 28, 14, 0.05), (-42, 46, 10, 0.09), (36, 44, 15, 0.03),
+        (92, 26, 11, 0.07)
+    ]
+
+    var body: some View {
+        ZStack {
+            ForEach(particles.indices, id: \.self) { index in
+                let particle = particles[index]
+                Image(systemName: index.isMultiple(of: 2) ? "sparkle" : "star.fill")
+                    .font(.system(size: particle.size, weight: .bold))
+                    .foregroundStyle(AppTheme.titleGradient)
+                    .shadow(color: AppTheme.pinkGlow, radius: 10)
+                    .scaleEffect(isActive ? 1.35 : 0.25)
+                    .opacity(isActive ? 1 : 0)
+                    .offset(x: isActive ? particle.x : 0, y: isActive ? particle.y : 0)
+                    .animation(
+                        .easeOut(duration: 0.78).delay(particle.delay),
+                        value: isActive
+                    )
+            }
+        }
     }
 }
 
@@ -172,10 +222,10 @@ struct AttachmentStyleRow: View {
 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(style.label)
-                        .font(.system(size: 15, weight: .bold))
+                        .font(.system(size: 17, weight: .bold))
                         .foregroundColor(isSelected ? AppTheme.pinkLight : AppTheme.textPrimary)
                     Text(style.description)
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.system(size: 14, weight: .medium))
                         .foregroundColor(AppTheme.textSecondary)
                         .lineLimit(2)
                 }
@@ -212,7 +262,7 @@ struct MoodChip: View {
                     .font(.system(size: 21, weight: .medium))
                     .foregroundColor(isSelected ? AppTheme.pinkLight : AppTheme.textSecondary)
                 Text(mood.label)
-                    .font(.system(size: 12, weight: .bold))
+                    .font(.system(size: 15, weight: .bold))
                     .foregroundColor(isSelected ? AppTheme.pinkLight : AppTheme.textPrimary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
@@ -242,7 +292,7 @@ struct SelectRow: View {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .foregroundColor(isSelected ? AppTheme.pinkLight : AppTheme.textSecondary)
                 Text(label)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(isSelected ? AppTheme.pinkLight : AppTheme.textPrimary)
                 Spacer()
             }
@@ -264,7 +314,7 @@ struct ToggleRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Text(label)
-                .font(.system(size: 13, weight: .semibold))
+                .font(.system(size: 16, weight: .semibold))
                 .foregroundColor(AppTheme.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()
@@ -298,7 +348,7 @@ struct StrategyResultView: View {
                     .foregroundColor(timingColor)
                     .shadow(color: timingColor.opacity(0.45), radius: 12)
                 Text(input.goal.description)
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.system(size: 15, weight: .medium))
                     .foregroundColor(AppTheme.textSecondary)
                     .multilineTextAlignment(.center)
                     .lineSpacing(4)
@@ -318,7 +368,7 @@ struct StrategyResultView: View {
             if !result.subTips.isEmpty {
                 VStack(alignment: .leading, spacing: 10) {
                     Label("アドバイス", systemImage: "sparkles")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.system(size: 17, weight: .bold))
                         .foregroundColor(AppTheme.pinkLight)
                     ForEach(result.subTips, id: \.self) { tip in
                         HStack(alignment: .top, spacing: 8) {
@@ -327,7 +377,7 @@ struct StrategyResultView: View {
                                 .foregroundColor(AppTheme.pinkLight)
                                 .padding(.top, 5)
                             Text(tip)
-                                .font(.system(size: 12, weight: .medium))
+                                .font(.system(size: 15, weight: .medium))
                                 .foregroundColor(AppTheme.textPrimary)
                                 .lineSpacing(4)
                         }
@@ -341,7 +391,7 @@ struct StrategyResultView: View {
             if !tactics.isEmpty {
                 VStack(alignment: .leading, spacing: 10) {
                     Label("おすすめ心理テク", systemImage: "lightbulb.fill")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.system(size: 17, weight: .bold))
                         .foregroundColor(AppTheme.gold)
                     ForEach(tactics.prefix(3)) { tactic in
                         MiniTacticCard(tactic: tactic)
@@ -363,10 +413,10 @@ struct ResultBlock: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Label(title, systemImage: icon)
-                .font(.system(size: 13, weight: .bold))
+                .font(.system(size: 16, weight: .bold))
                 .foregroundColor(color)
             Text(text)
-                .font(.system(size: 12, weight: .medium))
+                .font(.system(size: 15, weight: .medium))
                 .foregroundColor(AppTheme.textPrimary)
                 .lineSpacing(4)
         }
@@ -383,13 +433,13 @@ struct MiniTacticCard: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text(tactic.name)
-                    .font(.system(size: 12, weight: .bold))
+                    .font(.system(size: 15, weight: .bold))
                     .foregroundColor(AppTheme.gold)
                 Spacer()
                 RatingStars(value: tactic.effectiveness, size: 8)
             }
             Text(tactic.howTo)
-                .font(.system(size: 11, weight: .medium))
+                .font(.system(size: 14, weight: .medium))
                 .foregroundColor(AppTheme.textSecondary)
                 .lineSpacing(3)
         }
