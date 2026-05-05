@@ -44,7 +44,7 @@ jobs:
           ASC_API_KEY_CONTENT: ${{ secrets.ASC_API_KEY_CONTENT }}
         run: |
           mkdir -p ~/.appstoreconnect/private_keys
-          echo "$ASC_API_KEY_CONTENT" > ~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8
+          echo "$ASC_API_KEY_CONTENT" | base64 -D > ~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8
 
       - name: Build Archive
         run: |
@@ -87,11 +87,9 @@ jobs:
             --verbose
 
       - name: Install PyJWT
-        run: pip3 install PyJWT requests
+        run: pip3 install --break-system-packages PyJWT requests
 
       - name: Submit for Review
-        env:
-          ASC_API_KEY_CONTENT: ${{ secrets.ASC_API_KEY_CONTENT }}
         run: |
-          echo "$ASC_API_KEY_CONTENT" > /tmp/asc_key.p8
+          cp ~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8 /tmp/asc_key.p8
           python3 scripts/submit.py $(date +%Y%m%d%H%M) || true
