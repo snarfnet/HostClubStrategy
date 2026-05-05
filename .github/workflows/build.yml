@@ -55,6 +55,7 @@ jobs:
             -project HostClubStrategy.xcodeproj \
             -scheme HostClubStrategy \
             -configuration Release \
+            -destination 'generic/platform=iOS' \
             -archivePath build/HostClubStrategy.xcarchive \
             -allowProvisioningUpdates \
             -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8 \
