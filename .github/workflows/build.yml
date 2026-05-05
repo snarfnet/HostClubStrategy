@@ -41,10 +41,10 @@ jobs:
 
       - name: Set up ASC API Key
         env:
-          ASC_KEY_BASE64: ${{ secrets.ASC_KEY_BASE64 }}
+          ASC_API_KEY_CONTENT: ${{ secrets.ASC_API_KEY_CONTENT }}
         run: |
           mkdir -p ~/.appstoreconnect/private_keys
-          echo "$ASC_KEY_BASE64" | base64 --decode > ~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8
+          echo "$ASC_API_KEY_CONTENT" > ~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8
 
       - name: Build Archive
         run: |
@@ -91,7 +91,7 @@ jobs:
 
       - name: Submit for Review
         env:
-          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          ASC_API_KEY_CONTENT: ${{ secrets.ASC_API_KEY_CONTENT }}
         run: |
-          echo "$ASC_KEY_CONTENT" > /tmp/asc_key.p8
+          echo "$ASC_API_KEY_CONTENT" > /tmp/asc_key.p8
           python3 scripts/submit.py $(date +%Y%m%d%H%M) || true
