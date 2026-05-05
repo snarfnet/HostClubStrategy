@@ -175,13 +175,13 @@ struct SectionTitle: View {
         HStack(spacing: 10) {
             Image(systemName: icon)
                 .foregroundStyle(AppTheme.titleGradient)
-                .font(.system(size: 15, weight: .bold))
+                .font(.system(size: 17, weight: .bold))
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.system(size: 17, weight: .bold))
+                    .font(.system(size: 20, weight: .bold))
                     .foregroundColor(AppTheme.textPrimary)
                 Text(subtitle)
-                    .font(.system(size: 11, weight: .medium))
+                    .font(.system(size: 13, weight: .medium))
                     .foregroundColor(AppTheme.textSecondary)
             }
             Spacer()
@@ -210,10 +210,10 @@ struct GoalCard: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(goal.title)
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.system(size: 18, weight: .bold))
                         .foregroundColor(isSelected ? AppTheme.pinkLight : AppTheme.textPrimary)
                     Text(goal.titleEN)
-                        .font(.system(size: 12, weight: .medium))
+                        .font(.system(size: 14, weight: .medium))
                         .foregroundColor(AppTheme.textSecondary)
                 }
 
@@ -253,13 +253,13 @@ struct QuickTipItem: View {
                     .shadow(color: color.opacity(0.5), radius: 8)
             }
             Text(text)
-                .font(.system(size: 13, weight: .bold))
+                .font(.system(size: 15, weight: .bold))
                 .foregroundColor(AppTheme.textPrimary)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .minimumScaleFactor(0.85)
             Text(subLabel)
-                .font(.system(size: 10, weight: .medium))
+                .font(.system(size: 12, weight: .medium))
                 .foregroundColor(AppTheme.textSecondary)
         }
         .frame(maxWidth: .infinity)
