@@ -4,7 +4,7 @@ import GoogleMobileAds
 struct BannerAdView: UIViewRepresentable {
     func makeUIView(context: Context) -> GADBannerView {
         let banner = GADBannerView(adSize: GADAdSizeBanner)
-        banner.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        banner.adUnitID = "ca-app-pub-9404799280370656/3339832011"
         banner.delegate = context.coordinator
         return banner
     }
