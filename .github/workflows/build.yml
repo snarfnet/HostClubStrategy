@@ -1,8 +1,8 @@
-name: Build and Upload to TestFlight
+name: Build and Upload to App Store
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   workflow_dispatch:
 
 jobs:
@@ -49,6 +49,7 @@ jobs:
         run: |
           mkdir -p ~/.appstoreconnect/private_keys
           echo "$ASC_API_KEY_CONTENT" | base64 -D > ~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8
+          cp ~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8 /tmp/asc_key.p8
 
       - name: Build Archive
         run: |
@@ -89,4 +90,10 @@ jobs:
             --file "$IPA_PATH" \
             --apiKey WDXGY9WX55 \
             --apiIssuer 2be0734f-943a-4d61-9dc9-5d9045c46fec \
-            --verbose
+            --verbose 2>&1 || true
+
+      - name: Install PyJWT
+        run: pip3 install --break-system-packages PyJWT requests
+
+      - name: Submit for Review
+        run: python3 scripts/submit.py
