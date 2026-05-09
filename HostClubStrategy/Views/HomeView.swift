@@ -24,23 +24,7 @@ struct HomeView: View {
     private var header: some View {
         VStack(spacing: 24) {
             HStack {
-                Image(systemName: "line.3.horizontal")
-                    .font(.system(size: 24, weight: .medium))
-                    .foregroundColor(AppTheme.textPrimary)
                 Spacer()
-                HStack(spacing: 8) {
-                    Image(systemName: "sparkle")
-                        .foregroundStyle(AppTheme.titleGradient)
-                    Text("12,345")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(AppTheme.textPrimary)
-                    Image(systemName: "plus.circle")
-                        .foregroundColor(AppTheme.pinkLight)
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(Capsule().fill(AppTheme.card))
-                .overlay(Capsule().stroke(AppTheme.cardBorder, lineWidth: 1))
             }
 
             VStack(spacing: 10) {
