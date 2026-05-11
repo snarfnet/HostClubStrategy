@@ -29,13 +29,24 @@ if APP_ID == 'PLACEHOLDER':
 print(f'Waiting for build {BUILD_NUMBER} to be processed...')
 build_id = None
 for i in range(80):
-    r = api('GET', f'/builds?filter[app]={APP_ID}&filter[processingState]=VALID&sort=-uploadedDate&limit=1')
+    if BUILD_NUMBER:
+        r = api('GET', f'/builds?filter[app]={APP_ID}&filter[version]={BUILD_NUMBER}&filter[processingState]=VALID&limit=1')
+    else:
+        r = api('GET', f'/builds?filter[app]={APP_ID}&filter[processingState]=VALID&sort=-uploadedDate&limit=1')
     data = r.json()
     if data.get('data'):
         build_id = data['data'][0]['id']
         bv = data['data'][0]['attributes'].get('version', '?')
         print(f'Build ready: {bv} id={build_id}')
         break
+    if i >= 20 and BUILD_NUMBER:
+        r2 = api('GET', f'/builds?filter[app]={APP_ID}&filter[processingState]=VALID&sort=-uploadedDate&limit=1')
+        d2 = r2.json()
+        if d2.get('data'):
+            build_id = d2['data'][0]['id']
+            bv = d2['data'][0]['attributes'].get('version', '?')
+            print(f'Fallback to latest valid build {bv}: {build_id}')
+            break
     print(f'  Waiting... ({i+1}/80)')
     time.sleep(30)
 
