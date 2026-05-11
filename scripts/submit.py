@@ -92,7 +92,7 @@ if version_state in ('WAITING_FOR_REVIEW', 'IN_REVIEW'):
 
 if version_state == 'PREPARE_FOR_SUBMISSION' and existing_version_string == VERSION:
     print(f'Reusing existing version {version_id} in PREPARE_FOR_SUBMISSION')
-elif not version_id or version_state in ('READY_FOR_SALE', 'READY_FOR_DISTRIBUTION') or existing_version_string != VERSION:
+elif not version_id or version_state in ('READY_FOR_SALE', 'READY_FOR_DISTRIBUTION'):
     r = api('POST', '/appStoreVersions', json={
         'data': {'type': 'appStoreVersions',
                  'attributes': {'platform': 'IOS', 'versionString': VERSION},
@@ -104,8 +104,8 @@ elif not version_id or version_state in ('READY_FOR_SALE', 'READY_FOR_DISTRIBUTI
     version_id = r.json()['data']['id']
     print(f'Created version: {version_id}')
 else:
-    # DEVELOPER_REJECTED or other states — delete and recreate
-    print(f'Version in state {version_state}, deleting and recreating...')
+    # Wrong version string or DEVELOPER_REJECTED — delete and recreate
+    print(f'Version {existing_version_string} in state {version_state}, deleting and recreating as {VERSION}...')
     api('DELETE', f'/appStoreVersions/{version_id}')
     time.sleep(5)
     r = api('POST', '/appStoreVersions', json={
