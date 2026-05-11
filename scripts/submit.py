@@ -4,6 +4,7 @@ KEY_ID = 'WDXGY9WX55'
 ISSUER = '2be0734f-943a-4d61-9dc9-5d9045c46fec'
 APP_ID = '6766405796'
 BUILD_NUMBER = sys.argv[1] if len(sys.argv) > 1 else ''
+VERSION = sys.argv[2] if len(sys.argv) > 2 else '1.0'
 
 p8 = open('/tmp/asc_key.p8').read()
 
@@ -59,10 +60,12 @@ if version_state in ('WAITING_FOR_REVIEW', 'IN_REVIEW'):
     print(f'Already in review. Done.')
     sys.exit(0)
 
-if not version_id or version_state == 'READY_FOR_SALE':
+if version_state == 'PREPARE_FOR_SUBMISSION':
+    print(f'Reusing existing version {version_id} in PREPARE_FOR_SUBMISSION')
+elif not version_id or version_state in ('READY_FOR_SALE', 'READY_FOR_DISTRIBUTION'):
     r = api('POST', '/appStoreVersions', json={
         'data': {'type': 'appStoreVersions',
-                 'attributes': {'platform': 'IOS', 'versionString': '1.0'},
+                 'attributes': {'platform': 'IOS', 'versionString': VERSION},
                  'relationships': {'app': {'data': {'type': 'apps', 'id': APP_ID}}}}
     })
     if r.status_code not in (200, 201):
