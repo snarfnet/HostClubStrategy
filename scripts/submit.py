@@ -86,13 +86,12 @@ elif not version_id or version_state in ('READY_FOR_SALE', 'READY_FOR_DISTRIBUTI
     print(f'Created version: {version_id}')
 
 # Assign build
-api('PATCH', f'/appStoreVersions/{version_id}', json={
-    'data': {'type': 'appStoreVersions', 'id': version_id,
-             'relationships': {'build': {'data': {'type': 'builds', 'id': build_id}}}}
-})
+r = api('PATCH', f'/appStoreVersions/{version_id}/relationships/build',
+    json={'data': {'type': 'builds', 'id': build_id}})
+print(f'Build assigned: {r.status_code}')
 
 # Cancel blocking submissions
-for state in ['UNRESOLVED_ISSUES']:
+for state in ['UNRESOLVED_ISSUES', 'READY_FOR_REVIEW']:
     r = api('GET', f'/apps/{APP_ID}/reviewSubmissions?filter[state]={state}')
     for sub in r.json().get('data', []):
         sid = sub['id']
