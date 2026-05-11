@@ -66,28 +66,33 @@ for state in ['UNRESOLVED_ISSUES', 'READY_FOR_REVIEW', 'WAITING_FOR_REVIEW']:
         if state == 'WAITING_FOR_REVIEW':
             print(f'Already WAITING_FOR_REVIEW submission {sid[:8]} — skipping cancel, done.')
             sys.exit(0)
-        api('PATCH', f'/reviewSubmissions/{sid}',
+        r2 = api('PATCH', f'/reviewSubmissions/{sid}',
             json={'data': {'type': 'reviewSubmissions', 'id': sid, 'attributes': {'canceled': True}}})
-        print(f'Canceled {state} submission {sid[:8]}')
+        if r2.ok:
+            print(f'Canceled {state} submission {sid[:8]}')
+        else:
+            print(f'Cancel {sid[:8]} failed (ignored): {r2.status_code}')
 
 time.sleep(10)
 
 # Find or create version
 version_id = None
 version_state = None
+existing_version_string = None
 r = api('GET', f'/apps/{APP_ID}/appStoreVersions?filter[platform]=IOS&limit=1')
 if r.json().get('data'):
     version_id = r.json()['data'][0]['id']
     version_state = r.json()['data'][0]['attributes']['appStoreState']
-    print(f'Version: {version_id} state={version_state}')
+    existing_version_string = r.json()['data'][0]['attributes']['versionString']
+    print(f'Version: {existing_version_string} state={version_state} id={version_id}')
 
 if version_state in ('WAITING_FOR_REVIEW', 'IN_REVIEW'):
     print(f'Already in review. Done.')
     sys.exit(0)
 
-if version_state == 'PREPARE_FOR_SUBMISSION':
+if version_state == 'PREPARE_FOR_SUBMISSION' and existing_version_string == VERSION:
     print(f'Reusing existing version {version_id} in PREPARE_FOR_SUBMISSION')
-elif not version_id or version_state in ('READY_FOR_SALE', 'READY_FOR_DISTRIBUTION'):
+elif not version_id or version_state in ('READY_FOR_SALE', 'READY_FOR_DISTRIBUTION') or existing_version_string != VERSION:
     r = api('POST', '/appStoreVersions', json={
         'data': {'type': 'appStoreVersions',
                  'attributes': {'platform': 'IOS', 'versionString': VERSION},
