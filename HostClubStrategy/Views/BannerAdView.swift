@@ -11,7 +11,7 @@ struct BannerAdView: UIViewRepresentable {
     func updateUIView(_ uiView: BannerView, context: Context) {
         guard uiView.rootViewController == nil else { return }
         if let windowScene = uiView.window?.windowScene,
-           let rootVC = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController {
+           let rootVC = windowScene.keyWindow?.rootViewController {
             uiView.rootViewController = rootVC
             uiView.load(Request())
         }
