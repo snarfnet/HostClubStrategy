@@ -26,7 +26,7 @@ targets:
       properties:
         CFBundleDisplayName: ホスト攻略
         CFBundleIconName: AppIcon
-        CFBundleShortVersionString: "1.0"
+        CFBundleShortVersionString: "1.2"
         CFBundleVersion: "1"
         LSRequiresIPhoneOS: true
         UIDeviceFamily:
